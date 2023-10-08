@@ -94,25 +94,18 @@ export class SortedList<T> {
   }
 
   private _search(key: number): number {
-    let min = 0;
-    let max = this._array.length - 1;
-    while (max >= min) {
-      let mid = (min + max) >> 1;
+    let min = -1;
+    let max = this._array.length;
+    while (max - min > 1) {
+      const mid = (min + max) >> 1;
       const midKey = this._getKey(this._array[mid]);
-      if (midKey > key) {
-        max = mid - 1;
+      if (midKey >= key) {
+        max = mid;
       } else if (midKey < key) {
-        min = mid + 1;
-      } else {
-        // key in list, walk to lowest duplicate
-        while (mid > 0 && this._getKey(this._array[mid - 1]) === key) {
-          mid--;
-        }
-        return mid;
+        min = mid;
       }
     }
-    // key not in list
-    // still return closest min (also used as insert position)
-    return min;
+    // return first element not less than key (also used as insert position)
+    return max;
   }
 }
